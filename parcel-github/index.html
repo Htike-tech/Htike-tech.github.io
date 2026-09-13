@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171a20">
+  <meta name="description" content="A working example MVP for delivery support agents. Review fictional orders, prepare a reply, and resolve delivery tickets in one workspace.">
+  <title>Parcel — Delivery support</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%23171a20'/%3E%3Cpath d='M11 13h12a7 7 0 0 1 0 14h-5v6h-7zm7 6v3h5a1.5 1.5 0 0 0 0-3z' fill='%23ff825c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 4h16l2 11v5H2v-5L4 4Z"/><path d="M2 15h6l2 3h4l2-3h6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m21 3-7 18-4-7-7-4 18-7ZM10 14 21 3"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 8a9 9 0 1 0 1 8M20 3v5h-5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 6 10 7 10-7"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 3H4v18h16V9l-6-6ZM14 3v6h6M8 13h8m-8 4h6"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M1 4h13v13H1V4Zm13 5h5l4 5v3h-9"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  </defs></svg>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Parcel delivery support home"><span class="brand-mark">p</span><span>parcel<span class="brand-dot">.</span></span></a>
+    <div class="workspace-name"><span class="workspace-divider"></span>Northline Supply <span class="workspace-label">Support workspace</span></div>
+    <div class="top-actions"><button class="text-button" id="about-button" aria-label="About this MVP"><svg class="icon"><use href="#i-info"/></svg><span>About this MVP</span></button><span class="avatar agent" title="Demo support agent">D</span></div>
+  </header>
+  <div class="demo-bar"><div><span class="demo-tag">DEMO</span><span>Fictional orders. Replies and actions stay in this session.</span></div><button id="reset-button" aria-label="Reset demo"><svg class="icon"><use href="#i-refresh"/></svg>Reset demo</button></div>
+  <main class="app-layout">
+    <aside class="queue" aria-label="Delivery ticket inbox">
+      <div class="queue-heading"><span class="eyebrow">YOUR WORKSPACE</span><h1>Delivery inbox<span class="heading-count">6</span></h1><p>Every order has a next step.</p></div>
+      <div class="queue-filters" aria-label="Ticket status"><button id="active-filter" class="filter active" aria-pressed="true">Inbox <span id="active-count">6</span></button><button id="resolved-filter" class="filter" aria-pressed="false">Resolved <span id="resolved-count">0</span></button></div>
+      <div class="queue-section"><span id="queue-label">ACTIVE TICKETS</span><span>Newest first</span></div>
+      <div id="ticket-list" class="ticket-list"></div>
+      <div class="queue-footer"><div class="footer-icon"><svg class="icon"><use href="#i-check"/></svg></div><div><strong id="resolved-progress">0 of 6 tickets resolved</strong><span>One less “where is my order?”</span></div></div>
+    </aside>
+    <section id="ticket-workspace" class="ticket-workspace" aria-label="Selected ticket"></section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="about-dialog" aria-labelledby="about-title">
+    <div class="dialog-top"><span class="dialog-label">THE MVP, EXPLAINED</span><button class="icon-button" data-close="about-dialog" aria-label="Close explanation"><svg class="icon"><use href="#i-close"/></svg></button></div>
+    <h2 id="about-title">One agent. One recurring problem.</h2>
+    <p>Parcel helps a customer-support agent answer “Where is my order?” and delivery-problem tickets from one workspace.</p>
+    <ol class="how-steps"><li><b>Open a ticket.</b><span>See the customer’s question alongside the matching order.</span></li><li><b>Check the facts.</b><span>Review tracking events and the relevant sample store policy.</span></li><li><b>Take the next step.</b><span>Prepare a reply, record an escalation, or resolve the ticket.</span></li></ol>
+    <div class="mvp-hypothesis"><strong>What would we test?</strong><p>Can agents handle delivery tickets faster, with fewer mistakes, than when switching between separate support and tracking tools?</p></div>
+    <p class="dialog-footnote">This example uses six fictional orders and rule-based reply templates. It has no live store, courier, email, or AI connection. All changes reset when you reload.</p>
+    <button class="button primary full-width" data-close="about-dialog">Try the workflow<svg class="icon"><use href="#i-arrow"/></svg></button>
+  </dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><div class="dialog-top"><span class="dialog-label">START FRESH</span><button class="icon-button" data-close="reset-dialog" aria-label="Cancel reset"><svg class="icon"><use href="#i-close"/></svg></button></div><h2 id="reset-title">Reset the demo?</h2><p>This clears your drafts, replies, and actions, and restores all six sample tickets.</p><div class="dialog-actions"><button class="button secondary" data-close="reset-dialog">Keep working</button><button class="button primary" id="confirm-reset">Reset demo</button></div></dialog>
+</body>
+</html>
